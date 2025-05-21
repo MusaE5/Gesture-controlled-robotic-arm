@@ -1,59 +1,81 @@
 # Gesture-Controlled Robotic Arm
 
-This project uses an MPU6050 motion sensor and a trained machine learning model to classify hand gestures in real time, which are then used to control a robotic arm.
+This project uses an MPU6050 motion sensor and a trained machine learning model to classify hand gestures in real time, which are then used to control a 4-DOF robotic arm. It's built with Python on a Raspberry Pi and combines embedded systems, real-time ML inference, and sensor-based control.
 
 ---
 
-## Components
+##  Components
 
-- Raspberry Pi
-- MPU6050 (IMU sensor)
-- 4-servo robotic arm
-- Python 3 (scikit-learn, pandas, numpy, joblib)
-
----
-
-## Repository Structure
-
-- `collect_data.py` — Records labeled gesture data from the glove
-- `train_model.py` — Final training script using Random Forest
-- `predict_live.py` — Real-time gesture classification using live sensor input
-- `ml_challenges/` — Learning scripts that break down model training step by step:
-  - `1_load_csv.py` — Load and view gesture data
-  - `2_windowing.py` — Slice data into 2-second windows
-  - `3_extract_features.py` — Extract mean/std features from each window
-  - `4_train_model.py` — End-to-end training and evaluation pipeline
-  - `check_label_counts.py` — Utility script to debug class imbalance in training data
+- Raspberry Pi (any model with I2C support)
+- MPU6050 (accelerometer + gyroscope)
+- MG90S servos (x4)
+- PCA9685 servo driver (via I2C)
+- Python 3 with:
+  - scikit-learn
+  - pandas
+  - numpy
+  - joblib
 
 ---
 
-## How It Works
+##  Repository Structure
 
-1. Record labeled gestures using the MPU6050 glove with `collect_data.py`
-2. Extract features and train a Random Forest model using `train_model.py`
-3. Use `predict_live.py` to classify gestures from live data
-4. Predicted gestures will soon be used to control a robotic arm in real time
-
----
-
-## Debugging and Model Improvements
-
-- Initially, the model consistently misclassified gestures like "up" and "down" as "left"
-- Using `check_label_counts.py`, I discovered a class imbalance in the training windows
-- After recording additional samples and retraining, live predictions became highly accurate and consistent
-
----
-
-## Future Improvements
-
-- Servo integration for gesture-based arm control
-- Confidence thresholds to filter out uncertain predictions
-- Live visualization dashboard to monitor real-time predictions
-- Feature engineering: extract additional statistical features such as range, max-min difference,   acceleration magnitude, or temporal patterns to improve gesture separability
-- Evaluate and compare alternative classifiers (e.g. KNN, SVM, or neural networks) for improved generalization
+| File/Folder             | Description |
+|-------------------------|-------------|
+| `collect_data.py`       | Record labeled gesture data from the MPU6050 glove |
+| `train_model.py`        | Final script to extract features, train Random Forest, and save `model.pkl` |
+| `predict_live.py`       | Real-time gesture prediction using live sensor input |
+| `gesture_controller_gpio.py` | Single-servo gesture test using GPIO (archived in `tests/`) |
+| `tests/`                | Temporary/test scripts (e.g., GPIO-based servo controller) |
+| `ml_challenges/`        | Learning scripts that break down ML pipeline:
+  - `1_load_csv.py` — Load and explore dataset
+  - `2_windowing.py` — Slice data into time-based windows
+  - `3_extract_features.py` — Extract mean/std features per axis
+  - `4_train_model.py` — End-to-end train/test split and evaluation
+| `check_label_counts.py` | Check for gesture imbalance in training data |
 
 ---
 
-## Author
+##  How It Works
+
+1. Record labeled gestures using `collect_data.py`
+2. Train a gesture classification model with `train_model.py` using mean/std features
+3. Use `predict_live.py` to classify real-time gestures
+4. (Coming soon) Map classified gestures to servo movements to control a 4-DOF robotic arm
+
+---
+
+##  Debugging Process & Model Evolution
+
+- The initial model misclassified gestures like `"up"` and `"down"` as `"left"` due to class imbalance
+- After using `check_label_counts.py`, I recorded additional training data
+- Retraining the model improved accuracy significantly — `predict_live.py` now makes highly reliable predictions across all 4 classes
+
+---
+
+##  Future Improvements
+
+-  **Servo integration** via PCA9685 to control a full robotic arm (arriving soon)
+-  Add **prediction confidence thresholds** to reduce false positives
+-  **Live visualization dashboard** (Streamlit or Matplotlib) for real-time predictions
+-  Feature engineering: add `range`, `magnitude`, or `temporal derivatives`
+-  Evaluate classifiers beyond Random Forest (KNN, SVM, shallow MLPs)
+
+---
+
+##  Demo (Coming Soon)
+
+> To be added once full servo control is working:
+
+-  Terminal screen recording of live predictions
+-  Video showing servo reacting to hand gestures
+-  Final demo: glove → full robotic arm motion via ML pipeline
+
+---
+
+##  Author
 
 Made by [MusaE5](https://github.com/MusaE5)
+
+---
+
