@@ -25,6 +25,7 @@ This project uses an MPU6050 motion sensor and a trained machine learning model 
 | `collect_data.py`            | Record labeled gesture data from the MPU6050 glove |
 | `train_model.py`             | Final script to extract features, train Random Forest, and save `model.pkl` |
 | `predict_live.py`            | Real-time gesture prediction using live sensor input |
+| `move_servo_predict.py`      | Uses live gesture predictions to move servos (row 0 for up/down, row 2 for left/right) |
 | `check_label_counts.py`      | Check for gesture imbalance in training data |
 | `tests/test_servo_single.py` | Diagnostic script to verify PCA9685 wiring and observe servo behavior |
 | `tests/`                     | Temporary/test scripts for debugging and validation |
@@ -45,7 +46,7 @@ This project uses an MPU6050 motion sensor and a trained machine learning model 
 1. Record labeled gestures using `collect_data.py`
 2. Train a gesture classification model with `train_model.py` using mean/std features
 3. Use `predict_live.py` to classify real-time gestures
-4. (In progress) Map classified gestures to servo movements using PCA9685 to control a 4-DOF robotic arm
+4. Use `move_servo_predict.py` to control robotic arm movement based on predicted gestures
 
 ---
 
@@ -60,21 +61,20 @@ This project uses an MPU6050 motion sensor and a trained machine learning model 
 
 ## Future Improvements
 
-- Servo integration via PCA9685 to control full robotic arm
+- Smooth servo motion using gradual angle changes and bounded movement ranges
 - Add prediction confidence thresholds to reduce false positives
+- Reduce gesture collection time to improve responsiveness (e.g. 1 second)
 - Streamlit/Matplotlib live dashboard to visualize predictions
 - Add features: magnitude, range, or derivatives to improve separability
 - Evaluate classifiers beyond Random Forest (e.g. KNN, SVM, shallow neural nets)
 
 ---
 
-## Demo (Coming Soon)
+## Demo
 
-To be added once PCA9685 servo control is live:
-
-- Terminal screen recording of live predictions
-- Video of single-servo gesture reaction
-- Full glove → robotic arm motion demo
+- [Live gesture → servo reaction demo (YouTube)]https://www.youtube.com/shorts/UtrVyAoeRxM 
+- Currently shows left/right motion using real-time prediction and servo control
+- More complete videos (including full robotic arm motion) to be added soon
 
 ---
 
