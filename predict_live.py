@@ -7,8 +7,8 @@ import joblib
 sensor = mpu6050(0x68)
 model = joblib.load("model.pkl")
 
-SAMPLE_RATE = 0.05  # 20 Hz = 1 sample every 0.05s
-WINDOW_SIZE = 40    # Must match training
+SAMPLE_RATE = 0.0375  
+WINDOW_SIZE = 20    
 
 def collect_window():
     print("\nCollecting gesture window...")

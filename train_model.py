@@ -10,7 +10,7 @@ df = pd.read_csv("gesture_data.csv", header=None)
 df.columns = ['Ax', 'Ay', 'Az', 'Gx', 'Gy', 'Gz', 'label']
 
 # Group data into windows (e.g. 40 samples per gesture)
-WINDOW_SIZE = 40
+WINDOW_SIZE = 20
 features = []
 labels = []
 
