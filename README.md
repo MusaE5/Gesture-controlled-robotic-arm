@@ -56,10 +56,10 @@ This project uses an MPU6050 motion sensor and a trained machine learning model 
 - Used `check_label_counts.py` to identify the imbalance and collected more samples
 - Retrained the model with balanced data and achieved highly reliable predictions
 - Built additional challenge scripts to re-understand each phase of the pipeline (data, model, prediction)
- Window Size Optimization
-To improve responsiveness, the model was retrained using a reduced WINDOW_SIZE = 20 (from the original 40), cutting gesture recognition time from ~2 seconds to ~0.75 seconds.
-Despite the shorter window, classification accuracy remained high (94%) with minimal misclassification.
-This change significantly improved the real-time feel of the robotic arm.
+- Window Size Optimization
+- To improve responsiveness, the model was retrained using a reduced WINDOW_SIZE = 20 (from the original 40), cutting gesture recognition time from ~2 seconds to ~0.75 seconds.
+- Despite the shorter window, classification accuracy remained high (94%) with minimal misclassification.
+- This change significantly improved the real-time feel of the robotic arm.
 
 ---
 
