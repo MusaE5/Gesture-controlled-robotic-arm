@@ -1,87 +1,96 @@
 # Gesture-Controlled Robotic Arm
 
-This project uses an MPU6050 motion sensor and a trained machine learning model to classify hand gestures in real time, which are then used to control a 4-DOF robotic arm. It's built with Python on a Raspberry Pi and combines embedded systems, real-time ML inference, and sensor-based control.
+This project uses an MPU6050 motion sensor and a trained machine learning model to classify hand gestures in real time, which are then used to control a 4-DOF robotic arm. Built with Python on a Raspberry Pi, it combines embedded systems, real-time ML inference, and sensor-based control.
 
 ---
 
-## Components
+##  How It Works
+1. Record labeled gestures using `collect_data.py`
+2. Train a Random Forest classifier on mean/std features using `train_model.py`
+3. Use `predict_and_move_arm.py` to detect real-time gestures and move the robotic arm
 
-- Raspberry Pi (any model with I2C support)
-- MPU6050 (accelerometer + gyroscope)
-- MG90S servos (x4)
-- PCA9685 servo driver (via I2C)
-- Python 3 with:
-  - scikit-learn
-  - pandas
-  - numpy
-  - joblib
+This demo system is optimized for responsiveness and visual clarity, using a reduced window size and large servo steps.
+
+---
+
+##  Key Features
+- **Live Gesture Classification**: Predicts from 4 gestures: up, down, left, right
+- **Real-Time Servo Control**: Servo angles update instantly with predictions
+- **Optimized Windowing**: Gesture window size reduced from 40 to 20, improving responsiveness to ~0.75s per gesture
+- **Modular Design**: Scripts separated by purpose (collection, training, prediction, testing)
+- **Learning-Focused Folders**: Documented breakdown of the ML and data pipeline
 
 ---
 
 ## 📁 Repository Structure
 
-| File/Folder                  | Description |
-|------------------------------|-------------|
-| `collect_data.py`            | Record labeled gesture data from the MPU6050 glove |
-| `train_model.py`             | Final script to extract features, train Random Forest, and save `model.pkl` |
-| `predict_live.py`            | Real-time gesture prediction using live sensor input |
-| `move_servo_predict.py`      | Uses live gesture predictions to move servos (row 0 for up/down, row 2 for left/right) |
-| `check_label_counts.py`      | Check for gesture imbalance in training data |
-| `tests/test_servo_single.py` | Diagnostic script to verify PCA9685 wiring and observe servo behavior |
-| `tests/`                     | Temporary/test scripts for debugging and validation |
-
-### Learning and Understanding (Not Used in Final Pipeline)
-
-| Folder             | Purpose |
-|--------------------|---------|
-| `ml_challenges/`   | Breakdown of full model pipeline into step-by-step learning scripts:<br>  - `1_load_csv.py` — Load and explore dataset  <br>  - `2_windowing.py` — Slice data into time-based windows  <br>  - `3_extract_features.py` — Extract mean/std features per axis  <br>  - `4_train_model.py` — End-to-end train/test split and evaluation |
-| `data_challenges/` | Rebuilt versions of gesture data collection scripts for deeper understanding and validation (e.g., custom timed sampling, accelerometer-only capture) |
-
-> These challenge folders were used to **rebuild the full system from scratch** and reflect my effort to learn machine learning and embedded systems deeply — not just run code.
+| File/Folder            | Description |
+|------------------------|-------------|
+| `collect_data.py`      | Record labeled gesture data from the MPU6050 glove |
+| `train_model.py`       | Extract features, train Random Forest, save `model.pkl` |
+| `predict_and_move_arm.py` | Main script for real-time gesture prediction and servo motion |
+| `tests/predict_live.py`| Old standalone prediction script (archived) |
+| `tests/test_servo_single.py` | Servo diagnostic test to verify wiring and movement |
+| `ml_challenges/`       | ML pipeline breakdown: load, window, extract, train |
+| `data_challenges/`     | Rebuilt/experimental gesture data collection variants |
 
 ---
 
-## How It Works
+##  Learning and Understanding (Challenge Folders)
 
-1. Record labeled gestures using `collect_data.py`
-2. Train a gesture classification model with `train_model.py` using mean/std features
-3. Use `predict_live.py` to classify real-time gestures
-4. Use `move_servo_predict.py` to control robotic arm movement based on predicted gestures
+### `ml_challenges/`
+Rebuilt the full model pipeline step-by-step for deeper understanding:
+- `1_load_csv.py` — Load and explore gesture dataset
+- `2_windowing.py` — Slice time-series data into gesture windows
+- `3_extract_features.py` — Extract mean/std for each axis
+- `4_train_model.py` — Full pipeline for training and evaluating classifier
 
----
+### `data_challenges/`
+Custom data capture experiments for validation and improved control:
+- `rebuild_collect_data.py` — Manual sampling + comments for learning
 
-## Debugging Process & Model Evolution
-
-- The initial model misclassified gestures like `"up"` and `"down"` as `"left"` due to class imbalance
-- Used `check_label_counts.py` to identify the imbalance and collected more samples
-- Retrained the model with balanced data and achieved highly reliable predictions
-- Built additional challenge scripts to re-understand each phase of the pipeline (data, model, prediction)
-- Window Size Optimization
-- To improve responsiveness, the model was retrained using a reduced WINDOW_SIZE = 20 (from the original 40), cutting gesture recognition time from ~2 seconds to ~0.75 seconds.
-- Despite the shorter window, classification accuracy remained high (94%) with minimal misclassification.
-- This change significantly improved the real-time feel of the robotic arm.
 
 ---
 
-## Future Improvements
-
-- Smooth servo motion using gradual angle changes and bounded movement ranges
-- Add prediction confidence thresholds to reduce false positives
-- Reduce gesture collection time to improve responsiveness (e.g. 1 second)
-- Streamlit/Matplotlib live dashboard to visualize predictions
-- Add features: magnitude, range, or derivatives to improve separability
-- Evaluate classifiers beyond Random Forest (e.g. KNN, SVM, shallow neural nets)
+## 🛠 Debugging & Model Evolution
+- Early version misclassified "up/down" as "left/right" due to class imbalance
+- Balanced the dataset after running `check_label_counts.py`
+- Retrained model yielded **~94% accuracy** even after reducing window size
+- Collected more diverse samples and shortened gesture duration to improve responsiveness
 
 ---
 
-## Demo
-
-- [Live gesture → servo reaction demo (YouTube)]https://www.youtube.com/shorts/UtrVyAoeRxM 
-- Currently shows left/right motion using real-time prediction and servo control
-- More complete videos (including full robotic arm motion) to be added soon
+##  Window Size Optimization
+- **Original**: WINDOW_SIZE = 40 (~1.5–2s delay)
+- **Optimized**: WINDOW_SIZE = 20 (~0.75s per prediction)
+- Maintained accuracy, reduced latency
+- Greatly improved live feel and responsiveness of the robotic arm
 
 ---
 
-## Author
+##  Future Improvements
+- Smooth servo motion with easing transitions
+- Add prediction confidence filtering to reduce noise
+- Use magnitude, derivative, or axis combinations for better feature separation
+- Try additional classifiers (KNN, SVM, lightweight neural networks)
+- Streamlit or Matplotlib dashboard to visualize live prediction/angle updates
 
-Made by [MusaE5](https://github.com/MusaE5)
+---
+
+## 🎥 Demo Video
+[Gesture-Controlled Robotic Arm — YouTube Demo](https://youtu.be/0qojFLV_fl0)
+
+Demonstrates gesture prediction and servo movement in real time (left, right, up, down). Video includes project overview, voiceover, and synchronized terminal + hardware visuals.
+
+---
+
+##  Author
+Made by **MusaE5** — .
+
+---
+
+##  Notes
+- Minimal comments are used in production scripts to maintain clarity
+- Fully commented learning-focused scripts are in `ml_challenges/` and `data_challenges/`
+- `predict_and_move_arm.py` is the **final live system** used in the video
+- `predict_live.py` has been archived to `tests/` to reflect repository cleanup
