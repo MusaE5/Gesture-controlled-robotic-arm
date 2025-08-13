@@ -4,6 +4,10 @@ This project uses an MPU6050 motion sensor and a trained machine learning model 
 
 ---
 
+## 🎥 Demo Video
+[Gesture-Controlled Robotic Arm — YouTube Demo](https://youtu.be/0qojFLV_fl0)
+
+Demonstrates gesture prediction and servo movement in real time (left, right, up, down). Video includes project overview, voiceover, and synchronized terminal + hardware visuals.
 ##  How It Works
 1. Record labeled gestures using `collect_data.py`
 2. Train a Random Forest classifier on mean/std features using `train_model.py`
@@ -74,13 +78,6 @@ Custom data capture experiments for validation and improved control:
 - Use magnitude, derivative, or axis combinations for better feature separation
 - Try additional classifiers (KNN, SVM, lightweight neural networks)
 - Streamlit or Matplotlib dashboard to visualize live prediction/angle updates
-
----
-
-## 🎥 Demo Video
-[Gesture-Controlled Robotic Arm — YouTube Demo](https://youtu.be/0qojFLV_fl0)
-
-Demonstrates gesture prediction and servo movement in real time (left, right, up, down). Video includes project overview, voiceover, and synchronized terminal + hardware visuals.
 
 ---
 
